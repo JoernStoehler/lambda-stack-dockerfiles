@@ -5,6 +5,10 @@ on:
     branches: 
       - 'master'
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: lambdastack:20.04
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -13,27 +17,28 @@ jobs:
       packages: write
 
     steps:
-      - 
-        name: Checkout
-        uses: actions/checkout@v3
-
-      - 
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        
-      - 
-        name: Login to GitHub Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - 
-        name: Build and Push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: Dockerfile.focal
-          push: true
-          tags: lambdastack:20.04
+    - 
+      name: Checkout
+      uses: actions/checkout@v3
+    - 
+      name: Login to GitHub Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - 
+      name: Extract metadata for the Docker image
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}  
+    - 
+      name: Build and Push
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        file: Dockerfile.stub
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
