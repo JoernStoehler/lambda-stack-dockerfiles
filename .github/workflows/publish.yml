@@ -33,7 +33,6 @@ jobs:
         name: Build and Push
         uses: docker/build-push-action@v4
         with:
-          context: .
           push: true
           tags: user/lambdastack:20.04
           file: Dockerimage.focal
