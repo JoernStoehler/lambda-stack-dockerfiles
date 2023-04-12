@@ -17,6 +17,9 @@ jobs:
       packages: write
 
     steps:
+    -
+      name: lowercase actor name
+      run: echo "ACTOR_NAME=$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
     - 
       name: Checkout
       uses: actions/checkout@v3
@@ -28,17 +31,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - 
-      name: Extract metadata for the Docker image
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}  
-    - 
       name: Build and Push
       uses: docker/build-push-action@v4
       with:
         context: .
         push: true
         file: Dockerfile.stub
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: ${{ env.REGISTRY }}/${{ env.ACTOR_NAME }}/${{ env.IMAGE_NAME }}
