@@ -36,4 +36,4 @@ jobs:
           context: .
           file: Dockerfile.focal
           push: true
-          tags: user/lambdastack:20.04
+          tags: ${{ github.actor }}/lambdastack:20.04
