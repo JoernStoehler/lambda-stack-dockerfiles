@@ -36,5 +36,5 @@ jobs:
       with:
         context: .
         push: true
-        file: Dockerfile.stub
+        file: Dockerfile.focal
         tags: ${{ env.REGISTRY }}/${{ env.ACTOR_NAME }}/${{ env.IMAGE_NAME }}
